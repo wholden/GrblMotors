@@ -101,7 +101,7 @@ class GrblDriver:
             'mm/sec2':self.zconfig['steps/sec2']/self.zconfig['steps/mm']
         }
 
-    def _write_global_config(self, wait=0.5):
+    def write_global_config(self, wait=0.5):
         """Should only need to be run at initial setup.  Configures
         global options like homing speed, limit switch behavior."""
         self.ser.reset_input_buffer()
@@ -160,7 +160,7 @@ class GrblDriver:
                     raise Exception(
                         ('Current setting for {} is {}, but {} is expected.'
                          ' Consider writing the settings again.'
-                        ).format(s,settings[s],v))
+                        ).format(s,v,settings[s]))
 
         #verify global config
         for s in resp:
@@ -204,8 +204,8 @@ class GrblDriver:
             time.sleep(self.waittimeout)
             while self.get_status_report()[0] == 'Run':
                 time.sleep(pingwait)
-            currentpos = self.get_positions()[axis]
-            assert currentpos == pos, 'Didn\'t get there!'
+            currentsteps = self.get_positions()[axis]
+            assert currentsteps - steps < 1, 'Didn\'t get there! Stopped at {} even though {} was requested.'.format(currentsteps,steps)
         
     def xmove(self, steps, blocking = True):
         """Move x-axis motor by requested number of steps"""
@@ -251,9 +251,12 @@ class GrblDriver:
         state, status = self.get_status_report()
         posre = re.compile(r'(-?\d*\.\d*),(-?\d*\.\d*),(-?\d*\.\d*)')
         positions = [float(x) for x in posre.match(status['MPos']).groups()]
-        positions = [x*config['steps/mm'] for x in positions]
+        configs = (self.xconfig,self.yconfig,self.zconfig)
+        steppositions = []
+        for p, c in zip(positions, configs):
+            steppositions.append(p*c['steps/mm'])
         keys = ['X','Y','Z']
-        return dict(zip(keys,positions))
+        return dict(zip(keys,steppositions))
 
     def _human_readable_settings(self):
         """Utility function to read all GRBL settings that attempts to load

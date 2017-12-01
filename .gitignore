@@ -48,3 +48,6 @@ Temporary Items
 
 .ipynb_checkpoints
 GrblMotors/__pycache__/*
+build
+dist
+GrblMotors.egg-info

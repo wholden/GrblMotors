@@ -297,7 +297,7 @@ class GrblDriver:
         self._write('!')
         time.sleep(pingwait)
         while True:
-            state,_=grbl.get_status_report()
+            state,_=self.get_status_report()
             if state.split(':')[1] == '0':
                 break
             time.sleep(pingwait)

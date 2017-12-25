@@ -7,8 +7,7 @@ def read(fname):
 setup(
     name = "GrblMotors",
     version = "0.1",
-    author = "William Holden",
-    author_email = "holdenwm@uw.edu",
+    author = "William",
     description = ("Driver interface for using stepper motors with Arduino and GRBL"),
     license = "MIT",
     # keywords = "example documentation tutorial",

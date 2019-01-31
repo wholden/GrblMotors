@@ -77,7 +77,7 @@ class GrblDriver:
         self.globalconfig = {
             1:255, #ms to wait before going idle (255=don't disable steppers)
             5:1,  #set NC limit switch
-            21:1, # enable hard limit switch (stop immediately)
+            21:0, # enable hard limit switch (stop immediately) # changed to off 1.31.19 after crash during data collection
             22:1, # enable homing cycle
             24:25, # homing speed 
             25:300 # homing speed

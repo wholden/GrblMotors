@@ -25,6 +25,9 @@ SERIAL_ADDRESS = '/dev/ttyACM0'
 
 global motors
 
+global ISHOMED
+ISHOMED = False
+
 def initialize():
     global motors
     motors = GrblDriver()
@@ -63,6 +66,9 @@ def go_to_mm(distance,blockuntilcomplete = True):
     Args:
         distance: Distance in mm to move the camera to.
     """
+    global ISHOMED
+    if not ISHOMED:
+        raise RuntimeError('Camera motor not homed yet. Home camera before moving. WATCH camera during homing.')
     steps = distance/motordict['camera']['mmperstep']
     steps = steps*motordict['camera']['direction']
     motors.zmove(steps, blocking = blockuntilcomplete)
@@ -75,6 +81,8 @@ def get_sample_position():
 
 def home_camera():
     motors.zhome()
+    global ISHOMED
+    ISHOMED = True
 
 def stop():
     motors.stop()

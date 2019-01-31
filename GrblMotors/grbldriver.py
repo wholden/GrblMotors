@@ -20,8 +20,8 @@ class GrblDriver:
             (as opposed to negative for professional CNC machines)
     """
     
-    def __init__(self):
-        self.ser = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=0.01)
+    def __init__(self, address='/dev/ttyACM0'):
+        self.ser = serial.Serial(address, baudrate=115200, timeout=0.01)
         self.waittimeout = 0.01
 
         #initialize and wait for grbl to wake up
@@ -315,3 +315,4 @@ class GrblDriver:
     def close(self):
         """Close GRBL serial connection"""
         self.ser.close()
+
